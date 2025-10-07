@@ -16,8 +16,32 @@ const app = express();
 
 connectDB();
 
-app.use(helmet());
-app.use(cors());
+const ALLOWED_ORIGINS = [
+  "http://localhost:4000",
+  "https://mycontacts-tau.vercel.app",
+];
+
+app.use(
+  cors({
+    origin: (origin, cb) => {
+      if (!origin) return cb(null, true);
+      return cb(null, ALLOWED_ORIGINS.includes(origin));
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
+
+app.options("*", cors());
+
+app.use(
+  helmet({
+    crossOriginResourcePolicy: false,
+    contentSecurityPolicy: false,
+  })
+);
+
 app.use(morgan("combined"));
 
 app.use(express.json({ limit: "10mb" }));
