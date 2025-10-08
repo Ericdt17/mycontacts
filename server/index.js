@@ -18,7 +18,7 @@ connectDB();
 
 const ALLOWED_ORIGINS = [
   "http://localhost:4000",
-  "https://mycontacts-eric.netlify.app/",
+  "https://mycontacts-eric.netlify.app",
 ];
 
 app.use(
