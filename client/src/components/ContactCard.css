@@ -5,7 +5,7 @@
   padding: 20px;
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   margin-bottom: 16px;
 }
@@ -15,8 +15,17 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
+.contact-main {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+  min-width: 0;
+}
+
 .contact-info {
   flex: 1;
+  min-width: 0;
 }
 
 .contact-name {
@@ -46,21 +55,61 @@
   cursor: pointer;
   padding: 8px;
   border-radius: 6px;
-  font-size: 16px;
   transition: background-color 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 32px;
   height: 32px;
+  color: #6b7280;
+}
+
+.action-btn {
+  color: #6b7280;
+}
+
+.action-btn svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+  flex-shrink: 0;
+}
+
+.action-btn svg path,
+.action-btn svg line,
+.action-btn svg polyline,
+.action-btn svg circle,
+.action-btn svg rect {
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.delete-btn svg {
+  color: #6b7280 !important;
+}
+
+.delete-btn svg path,
+.delete-btn svg line,
+.delete-btn svg polyline,
+.delete-btn svg circle,
+.delete-btn svg rect {
+  stroke: #6b7280 !important;
+  fill: none !important;
 }
 
 .edit-btn:hover {
   background: #f3f4f6;
 }
 
+.delete-btn {
+  background: none !important;
+}
+
 .delete-btn:hover {
-  background: #fef2f2;
+  background: #f3f4f6 !important;
 }
 
 .action-btn:active {

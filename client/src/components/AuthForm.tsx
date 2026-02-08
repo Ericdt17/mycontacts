@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import { HiEnvelope } from "react-icons/hi2";
+import { HiLockClosed, HiEye, HiEyeSlash } from "react-icons/hi2";
+import { Icon } from "./Icon";
 import "./AuthForm.css";
 
 interface AuthFormProps {
@@ -10,6 +13,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ onLogin, onRegister }) => {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,9 +27,12 @@ const AuthForm: React.FC<AuthFormProps> = ({ onLogin, onRegister }) => {
   return (
     <div className="auth-container">
       <div className="auth-card">
-        <p className="auth-description">
-          Login or create an account to manage your contacts
-        </p>
+        <div className="auth-header">
+          <h1 className="auth-title">MY CONTACTS</h1>
+          <p className="auth-description">
+            Login or create an account to manage your contacts
+          </p>
+        </div>
 
         <div className="auth-tabs">
           <button
@@ -46,33 +53,37 @@ const AuthForm: React.FC<AuthFormProps> = ({ onLogin, onRegister }) => {
           <div className="form-group">
             <label htmlFor="email">Email</label>
             <div className="input-container">
+              <Icon icon={HiEnvelope} className="input-icon" />
               <input
                 type="email"
                 id="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="your@email.com"
+                autoComplete="email"
                 required
               />
-              <button type="button" className="input-action">
-                ⋯
-              </button>
             </div>
           </div>
 
           <div className="form-group">
             <label htmlFor="password">Password</label>
             <div className="input-container">
+              <Icon icon={HiLockClosed} className="input-icon" />
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
+                autoComplete={isLogin ? "current-password" : "new-password"}
                 required
               />
-              <button type="button" className="input-action">
-                ⋯
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                <Icon icon={showPassword ? HiEyeSlash : HiEye} className="toggle-icon" />
               </button>
             </div>
           </div>

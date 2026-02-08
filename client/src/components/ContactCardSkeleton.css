@@ -1,0 +1,44 @@
+.contact-card-skeleton {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.skeleton-main {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+}
+
+.skeleton-avatar {
+  flex-shrink: 0;
+}
+
+.skeleton-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.skeleton-name {
+  margin-bottom: 4px;
+}
+
+.skeleton-phone {
+  margin-top: 4px;
+}
+
+.skeleton-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+

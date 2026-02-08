@@ -4,7 +4,9 @@ import Header from "./components/Header";
 import ContactList from "./components/ContactList";
 import ContactModal from "./components/ContactModal";
 import DeleteModal from "./components/DeleteModal";
+import ToastContainer from "./components/ToastContainer";
 import { authAPI, contactsAPI, Contact } from "./services/api";
+import { useToast } from "./hooks/useToast";
 import "./App.css";
 
 function App() {
@@ -12,7 +14,8 @@ function App() {
   const [userEmail, setUserEmail] = useState("");
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const { toasts, showToast, removeToast } = useToast();
 
   // Modal states
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
@@ -40,7 +43,7 @@ function App() {
       const response = await contactsAPI.getContacts();
       setContacts(response.data.contacts);
     } catch (err: any) {
-      setError("Failed to load contacts");
+      showToast("Failed to load contacts", "error");
     } finally {
       setLoading(false);
     }
@@ -49,7 +52,6 @@ function App() {
   const handleLogin = async (email: string, password: string) => {
     try {
       setLoading(true);
-      setError("");
       const response = await authAPI.login(email, password);
 
       if (response.success && response.token) {
@@ -57,10 +59,11 @@ function App() {
         localStorage.setItem("userEmail", response.user.email);
         setUserEmail(response.user.email);
         setIsAuthenticated(true);
+        showToast("Login successful!", "success");
         loadContacts();
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || "Login failed");
+      showToast(err.response?.data?.message || "Login failed", "error");
     } finally {
       setLoading(false);
     }
@@ -69,7 +72,6 @@ function App() {
   const handleRegister = async (email: string, password: string) => {
     try {
       setLoading(true);
-      setError("");
       const response = await authAPI.register(email, password);
 
       if (response.success && response.token) {
@@ -77,10 +79,11 @@ function App() {
         localStorage.setItem("userEmail", response.user.email);
         setUserEmail(response.user.email);
         setIsAuthenticated(true);
+        showToast("Account created successfully!", "success");
         loadContacts();
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || "Registration failed");
+      showToast(err.response?.data?.message || "Registration failed", "error");
     } finally {
       setLoading(false);
     }
@@ -92,6 +95,12 @@ function App() {
     setIsAuthenticated(false);
     setUserEmail("");
     setContacts([]);
+    setSearchQuery("");
+    showToast("Logged out successfully", "info");
+  };
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
   };
 
   const handleAddContact = () => {
@@ -119,19 +128,23 @@ function App() {
   ) => {
     try {
       setLoading(true);
-      setError("");
 
       if (editingContact) {
         await contactsAPI.updateContact(editingContact.id, contactData);
+        showToast("Contact updated successfully!", "success");
       } else {
         await contactsAPI.createContact(contactData);
+        showToast("Contact created successfully!", "success");
       }
 
       setIsContactModalOpen(false);
       setEditingContact(null);
       loadContacts();
     } catch (err: any) {
-      setError(err.response?.data?.message || "Failed to save contact");
+      showToast(
+        err.response?.data?.message || "Failed to save contact",
+        "error"
+      );
     } finally {
       setLoading(false);
     }
@@ -142,13 +155,16 @@ function App() {
 
     try {
       setLoading(true);
-      setError("");
       await contactsAPI.deleteContact(deletingContactId);
+      showToast("Contact deleted successfully!", "success");
       setIsDeleteModalOpen(false);
       setDeletingContactId(null);
       loadContacts();
     } catch (err: any) {
-      setError(err.response?.data?.message || "Failed to delete contact");
+      showToast(
+        err.response?.data?.message || "Failed to delete contact",
+        "error"
+      );
     } finally {
       setLoading(false);
     }
@@ -158,7 +174,7 @@ function App() {
     return (
       <div className="app">
         <AuthForm onLogin={handleLogin} onRegister={handleRegister} />
-        {error && <div className="error-message">{error}</div>}
+        <ToastContainer toasts={toasts} onRemove={removeToast} />
         {loading && <div className="loading-overlay">Loading...</div>}
       </div>
     );
@@ -166,12 +182,19 @@ function App() {
 
   return (
     <div className="app">
-      <Header userEmail={userEmail} onLogout={handleLogout} />
+      <Header
+        userEmail={userEmail}
+        onLogout={handleLogout}
+        onAddContact={handleAddContact}
+        searchQuery={searchQuery}
+        onSearch={handleSearch}
+      />
       <ContactList
         contacts={contacts}
         onEdit={handleEditContact}
         onDelete={handleDeleteContact}
-        onAddContact={handleAddContact}
+        searchQuery={searchQuery}
+        loading={loading}
       />
 
       <ContactModal
@@ -202,7 +225,7 @@ function App() {
         }
       />
 
-      {error && <div className="error-message">{error}</div>}
+      <ToastContainer toasts={toasts} onRemove={removeToast} />
       {loading && <div className="loading-overlay">Loading...</div>}
     </div>
   );

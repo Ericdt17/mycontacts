@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { IoClose } from "react-icons/io5";
+import { Icon } from "./Icon";
 import "./ContactModal.css";
 
 interface Contact {
@@ -68,8 +70,8 @@ const ContactModal: React.FC<ContactModalProps> = ({
           <h2 className="modal-title">
             {mode === "add" ? "New Contact" : "Edit Contact"}
           </h2>
-          <button className="modal-close" onClick={onClose}>
-            ×
+          <button className="modal-close" onClick={onClose} aria-label="Close">
+            <Icon icon={IoClose} />
           </button>
         </div>
 

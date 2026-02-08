@@ -1,23 +1,46 @@
 import React from "react";
+import { FiPlus } from "react-icons/fi";
+import { Icon } from "./Icon";
+import SearchBar from "./SearchBar";
+import UserMenu from "./UserMenu";
 import "./Header.css";
 
 interface HeaderProps {
   userEmail: string;
   onLogout: () => void;
+  onAddContact: () => void;
+  searchQuery: string;
+  onSearch: (query: string) => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ userEmail, onLogout }) => {
+const Header: React.FC<HeaderProps> = ({
+  userEmail,
+  onLogout,
+  onAddContact,
+  searchQuery,
+  onSearch,
+}) => {
   return (
     <header className="app-header">
       <div className="header-content">
-        <div className="user-info">
-          <span className="user-icon">👤</span>
-          <span className="user-email">{userEmail}</span>
+        {/* Logo/Titre */}
+        <div className="header-logo">
+          <span className="logo-text">My Contacts</span>
         </div>
-        <button className="logout-btn" onClick={onLogout}>
-          <span className="logout-icon">↗</span>
-          Logout
-        </button>
+
+        {/* Barre de recherche et bouton groupés */}
+        <div className="header-search-group">
+          <div className="header-search">
+            <SearchBar onSearch={onSearch} />
+          </div>
+          <button className="header-add-btn" onClick={onAddContact}>
+            <Icon icon={FiPlus} className="add-icon" />
+            <span className="add-btn-text">Add Contact</span>
+          </button>
+        </div>
+
+        {/* User Menu avec avatar et dropdown */}
+        <UserMenu userEmail={userEmail} onLogout={onLogout} />
       </div>
     </header>
   );
