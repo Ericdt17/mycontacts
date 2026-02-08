@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import AuthForm from "./components/AuthForm";
 import Header from "./components/Header";
 import ContactList from "./components/ContactList";
@@ -25,6 +25,18 @@ function App() {
     null
   );
 
+  const loadContacts = useCallback(async () => {
+    try {
+      setLoading(true);
+      const response = await contactsAPI.getContacts();
+      setContacts(response.data.contacts);
+    } catch (err: any) {
+      showToast("Failed to load contacts", "error");
+    } finally {
+      setLoading(false);
+    }
+  }, [showToast]);
+
   // Check if user is already authenticated
   useEffect(() => {
     const token = localStorage.getItem("authToken");
@@ -35,19 +47,7 @@ function App() {
       setIsAuthenticated(true);
       loadContacts();
     }
-  }, []);
-
-  const loadContacts = async () => {
-    try {
-      setLoading(true);
-      const response = await contactsAPI.getContacts();
-      setContacts(response.data.contacts);
-    } catch (err: any) {
-      showToast("Failed to load contacts", "error");
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [loadContacts]);
 
   const handleLogin = async (email: string, password: string) => {
     try {
